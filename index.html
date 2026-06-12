@@ -353,6 +353,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         <div style="flex-basis:100%;height:0"></div>
         <label class="doc-chip"><input type="checkbox" class="docType" value="cert">送達證書（整頁）</label>
         <label class="doc-chip"><input type="checkbox" class="docType" value="env">信封套印（整頁）</label>
+        <label class="doc-chip"><input type="checkbox" class="docType" value="env3">橫式信封（A4 每頁 3 筆）</label>
       </div>
       <div class="out-row">
         <button class="btn-primary" id="btnPrint">開啟列印／另存 PDF</button>
@@ -360,13 +361,18 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         <span class="spinner" id="spinner">產製中…</span>
       </div>
       <p class="out-note">
-        <b>輸出方式說明</b><br>
-        ．送達證書、簽收單、信封套印：Word 與列印／PDF 皆可輸出。Word 勾選一種時直接下載 .docx，勾選多種時打包為 ZIP；
-        列印則將勾選的文件合併為連續頁面，於列印對話框可選「另存為 PDF」。<br>
-        ．<b>對摺套印僅提供「列印／PDF」輸出，無法下載 Word</b>：每人一張 A4，上方 ¾ 為送達證書、下方 ¼ 為信封收件資訊（倒印），
-        沿摺線向後對摺即一面證書、一面地址，可直接黏貼於信封背面。
-        若勾選對摺套印後按 Word 下載，系統只會輸出其餘勾選的文件並提醒您。<br>
-        ．正式列印前，請在列印對話框「更多設定」取消「頁首和頁尾」，避免紙上印出檔案路徑。
+        <b>各文件格式說明</b><br>
+        ．<b>送達證書（整頁）</b>：每人一張完整 A4 送達證書。Word 與列印／PDF 皆可輸出。<br>
+        ．<b>簽收單</b>：所有勾選人員彙整為一張清冊，每人一列，由本人簽名。Word 與列印／PDF 皆可輸出。<br>
+        ．<b>信封套印（整頁）</b>：每人一頁橫式 A4 信封面（寄件人左上、收件人中右），適合需要逐張調整或大字列印時使用。Word 與列印／PDF 皆可輸出。<br>
+        ．<b>對摺套印（證書¾＋信封¼）</b>：每人一張 A4，上方 ¾ 為送達證書、下方 ¼ 為信封收件資訊（倒印）；
+        沿摺線向後對摺即一面證書、一面地址，可直接黏貼於信封背面，是最省工的日常作業格式。<b>僅提供列印／PDF</b>。<br>
+        ．<b>橫式信封（A4 每頁 3 筆）</b>：每張 A4 由上而下排 3 筆收件資訊，每格約 186×86mm（符合橫式信封 140–235×90–165mm 規格），
+        沿剪裁線裁開即可黏貼或套印於信封，適合人數多、想省紙時使用。<b>僅提供列印／PDF</b>。<br>
+        <b>輸出方式</b><br>
+        ．Word：勾選一種文件時直接下載 .docx，多種時打包為 ZIP；僅限列印的格式不會包含在內，系統會提醒。<br>
+        ．列印／PDF：勾選的文件合併為連續頁面，於列印對話框可選「另存為 PDF」；
+        正式列印前請在「更多設定」取消「頁首和頁尾」，避免紙上印出檔案路徑。
       </p>
     </div>
   </section>
@@ -729,10 +735,11 @@ $("#btnWord").addEventListener("click", async ()=>{
   const persons = selectedPersons();
   let types = selectedTypes();
   if(!persons.length) return alert("請先勾選至少一位人員。");
-  if(types.includes("fold")){
-    types = types.filter(t => t !== "fold");
-    if(!types.length) return alert("「對摺套印」僅提供列印／PDF 輸出，請改按「開啟列印／另存 PDF」。");
-    alert("提醒：「對摺套印」僅提供列印／PDF 輸出，此次 Word 下載將不包含該格式。");
+  const printOnly = types.filter(t => t === "fold" || t === "env3");
+  if(printOnly.length){
+    types = types.filter(t => t !== "fold" && t !== "env3");
+    if(!types.length) return alert("「對摺套印」與「橫式信封」僅提供列印／PDF 輸出，請改按「開啟列印／另存 PDF」。");
+    alert("提醒：「對摺套印」與「橫式信封」僅提供列印／PDF 輸出，此次 Word 下載將不包含這些格式。");
   }
   if(!types.length)   return alert("請先勾選至少一種文件。");
   const sp = $("#spinner"); sp.classList.add("show");
@@ -841,6 +848,27 @@ function envHTML(p){
   </div>`;
 }
 
+function env3HTML(persons){
+  const b = baseInfo;
+  const panel = p => `<div class="env3-panel">
+      <div class="e3-sender">${esc(b.學校郵遞區號)}　${esc(b.學校地址)}<br>${esc(b.學校名稱)}　人事室　寄　　編號：${esc(p.序號)}</div>
+      <div class="e3-recipient">
+        <div class="e3-zip">${esc(p.郵遞區號)}</div>
+        <div class="e3-addr">${esc(p.地址)}</div>
+        <div class="e3-name">${esc(p.姓名)}　　君收</div>
+      </div>
+    </div>`;
+  const cut = `<div class="env3-cut">✂　──────────────────────　剪　裁　線　──────────────────────</div>`;
+  let out = "";
+  for(let i = 0; i < persons.length; i += 3){
+    const group = persons.slice(i, i+3);
+    out += `<div class="pf-page env3-page">` +
+           group.map((p,j)=> panel(p) + (j < group.length-1 ? cut : "")).join("") +
+           `</div>`;
+  }
+  return out;
+}
+
 $("#btnPrint").addEventListener("click", ()=>{
   const persons = selectedPersons(), types = selectedTypes();
   if(!persons.length) return alert("請先勾選至少一位人員。");
@@ -850,6 +878,7 @@ $("#btnPrint").addEventListener("click", ()=>{
   if(types.includes("sign")) html += signHTML(persons);
   if(types.includes("env"))  html += persons.map(envHTML).join("");
   if(types.includes("fold")) html += persons.map(foldHTML).join("");
+  if(types.includes("env3")) html += env3HTML(persons);
   $("#printArea").innerHTML = html;
   fitFolds();
   setTimeout(()=>window.print(), 80);
@@ -892,6 +921,16 @@ $("#btnWord").disabled = $("#btnPrint").disabled = true;
 @page envpage{size:A4 landscape;margin:12mm}
 .env-page{page:envpage}
 @media print{ .env-page{min-height:auto} }
+
+/* 橫式信封：A4 每頁 3 個面板（約 186×86mm，符合橫式信封 140-235×90-165mm 規格），含剪裁線 */
+.env3-page{height:269mm;overflow:hidden}
+.env3-panel{height:84mm;padding:6mm 10mm;box-sizing:border-box}
+.e3-sender{font-size:9pt;line-height:1.6}
+.e3-recipient{margin:7mm 0 0 34%}
+.e3-zip{font-size:12pt;letter-spacing:.4em}
+.e3-addr{font-size:13pt;margin-top:1.5mm}
+.e3-name{font-size:19pt;font-weight:700;letter-spacing:.15em;margin-top:2mm}
+.env3-cut{height:6mm;line-height:6mm;text-align:center;font-size:7pt;border-top:1px dashed #000;color:#000}
 
 /* 整頁送達證書：鎖定一頁高度，內容由 JS 自動縮放，不跨頁 */
 .cert-page{height:269mm;overflow:hidden}
