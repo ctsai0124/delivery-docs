@@ -791,7 +791,7 @@ function certInner(p){
     <div class="pf-footer">※請繳回：${esc(b.學校名稱)}送達證書<br>　地址：${esc(b.學校郵遞區號)} ${esc(b.學校地址)}（學校地址）
       <div style="text-align:right">單位：人事室　　承辦人${esc(b.承辦人)}</div></div>`;
 }
-function certHTML(p){ return `<div class="pf-page">${certInner(p)}</div>`; }
+function certHTML(p){ return `<div class="pf-page cert-page"><div class="cert-fit">${certInner(p)}</div></div>`; }
 
 /* 對摺套印：上 3/4 送達證書（正向）＋ 下 1/4 信封收件資訊（旋轉180°） */
 function foldHTML(p){
@@ -855,16 +855,18 @@ $("#btnPrint").addEventListener("click", ()=>{
   setTimeout(()=>window.print(), 80);
 });
 
-/* 將對摺版證書自動縮放至剛好填滿摺線以上區域（最大化字級、消除留白） */
+/* 自動縮放：對摺版證書撐滿 3/4 區域；整頁證書超出一頁時自動縮回一頁內 */
 function fitFolds(){
   const pa = $("#printArea");
-  const pages = pa.querySelectorAll(".fold-page");
-  if(!pages.length) return;
+  const jobs = [];
+  pa.querySelectorAll(".fold-page").forEach(pg =>
+    jobs.push({area:pg.querySelector(".fold-cert"), inner:pg.querySelector(".fold-scale"), maxS:1.3}));
+  pa.querySelectorAll(".cert-page").forEach(pg =>
+    jobs.push({area:pg, inner:pg.querySelector(".cert-fit"), maxS:1.0}));   // 整頁版只縮不放大
+  if(!jobs.length) return;
   // 暫時離螢幕渲染以便量測（寬度=A4 可印寬 186mm）
   pa.style.cssText = "display:block;position:absolute;left:-12000px;top:0;width:186mm;background:#fff";
-  pages.forEach(pg => {
-    const area  = pg.querySelector(".fold-cert");
-    const inner = pg.querySelector(".fold-scale");
+  jobs.forEach(({area, inner, maxS}) => {
     const avail = area.clientHeight;
     let s = 1;
     for(let i = 0; i < 3; i++){
@@ -872,7 +874,7 @@ function fitFolds(){
       inner.style.transform = "scale(" + s + ")";
       const h = inner.getBoundingClientRect().height;
       if(Math.abs(h - avail) < 2) break;
-      s = Math.min(s * (avail / h), 1.3);   // 可放大，上限 1.3 倍
+      s = Math.min(s * (avail / h), maxS);
     }
     s = s * 0.995;   // 安全係數：避免縮放小數誤差裁掉最右側框線
     inner.style.width = (100/s) + "%";
@@ -890,6 +892,10 @@ $("#btnWord").disabled = $("#btnPrint").disabled = true;
 @page envpage{size:A4 landscape;margin:12mm}
 .env-page{page:envpage}
 @media print{ .env-page{min-height:auto} }
+
+/* 整頁送達證書：鎖定一頁高度，內容由 JS 自動縮放，不跨頁 */
+.cert-page{height:269mm;overflow:hidden}
+.cert-fit{transform-origin:top left;padding-right:3px;box-sizing:border-box}
 
 /* ── 對摺套印版面（A4 直式：上 3/4 證書、下 1/4 信封倒印） ── */
 .fold-page{height:271mm;display:flex;flex-direction:column;overflow:hidden}
