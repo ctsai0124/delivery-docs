@@ -586,7 +586,7 @@ function para(text, o={}){
   const lines = Array.isArray(text)? text : [text];
   return new D.Paragraph({
     alignment: o.align || D.AlignmentType.LEFT,
-    spacing: {before:o.before||0, after:o.after||0, line:o.line||276},
+    spacing: {before:o.before||0, after:o.after||0, line:o.line||(typeof CERT_LINE!=="undefined"?CERT_LINE:276)},
     children: lines.flatMap((ln,i)=> i? [new D.TextRun({break:1}), tr(ln,o)] : [tr(ln,o)])
   });
 }
@@ -598,18 +598,20 @@ function cell(content, o={}){
     children,
     columnSpan:o.span, rowSpan:o.rowSpan,
     verticalAlign: o.vAlign || D.VerticalAlign.CENTER,
-    margins:{top:60,bottom:60,left:90,right:90},
+    margins:(typeof CELL_PAD!=="undefined")?CELL_PAD:{top:60,bottom:60,left:90,right:90},
     width: o.width? {size:o.width, type:D.WidthType.DXA} : undefined
   });
 }
 const C = D.AlignmentType.CENTER;
+let CERT_LINE = 276;                                   // 段落行距（壓縮時調小）
+let CELL_PAD  = {top:60,bottom:60,left:90,right:90};   // 儲存格內距（壓縮時調小）
 
 /* ── 送達證書 ── */
 function certChildren(p, last){
   const b = baseInfo;
   const widths = [1750,1750,5000,2100];
   const rows = [
-    new D.TableRow({children:[
+    new D.TableRow({cantSplit:true, children:[
       cell("受送達人名稱姓名地址",{span:2,align:C,width:3500}),
       cell([ para(p.姓名,{bold:true,size:26}), para(`${p.郵遞區號} ${p.地址}`,{size:26}) ],{span:2,width:7100})
     ]}),
@@ -659,19 +661,24 @@ function certChildren(p, last){
   ];
 
   const out = [
-    para(`${b.學校名稱}送達證書`,{align:C,size:36,bold:true,after:160}),
+    para(`${b.學校名稱}送達證書`,{align:C,size:32,bold:true,after:100}),
     new D.Table({rows, width:{size:10600,type:D.WidthType.DXA}, columnWidths:widths}),
-    para(`※請繳回：${b.學校名稱}送達證書`,{size:24,before:160}),
-    para(`　地址：${b.學校郵遞區號} ${b.學校地址}（學校地址）`,{size:24}),
-    para(`單位：人事室　　承辦人${b.承辦人}`,{align:D.AlignmentType.RIGHT,size:24,before:120})
+    para(`※請繳回：${b.學校名稱}送達證書`,{size:22,before:80}),
+    para(`　地址：${b.學校郵遞區號} ${b.學校地址}（學校地址）`,{size:22}),
+    para(`單位：人事室　　承辦人${b.承辦人}`,{align:D.AlignmentType.RIGHT,size:22,before:60})
   ];
   if(!last) out.push(new D.Paragraph({children:[new D.PageBreak()]}));
   return out;
 }
 function buildCertDoc(persons){
+  CERT_LINE = 200;                                  // 壓縮行距（約 0.83 倍單行）
+  CELL_PAD  = {top:22,bottom:22,left:80,right:80};  // 壓縮儲存格上下內距
+  const children = persons.flatMap((p,i)=>certChildren(p, i===persons.length-1));
+  CERT_LINE = 276;                                  // 還原預設，避免影響其他文件
+  CELL_PAD  = {top:60,bottom:60,left:90,right:90};
   return new D.Document({sections:[{
-    properties:{page:{size:{width:11906,height:16838},margin:{top:600,bottom:500,left:650,right:650}}},
-    children: persons.flatMap((p,i)=>certChildren(p, i===persons.length-1))
+    properties:{page:{size:{width:11906,height:16838},margin:{top:340,bottom:300,left:567,right:567}}},
+    children
   }]});
 }
 
