@@ -932,8 +932,8 @@ $("#btnWord").disabled = $("#btnPrint").disabled = true;
 .e3-name{font-size:19pt;font-weight:700;letter-spacing:.15em;margin-top:2mm}
 .env3-cut{height:6mm;line-height:6mm;text-align:center;font-size:7pt;border-top:1px dashed #000;color:#000}
 
-/* 整頁送達證書：鎖定一頁高度，內容由 JS 自動縮放，不跨頁 */
-.cert-page{height:269mm;overflow:hidden}
+/* 整頁送達證書：鎖定保守高度，內容由 JS 自動縮放，確保任何列印邊界設定下都不跨頁 */
+.cert-page{height:250mm;overflow:hidden}
 .cert-fit{transform-origin:top left;padding-right:3px;box-sizing:border-box}
 
 /* ── 對摺套印版面（A4 直式：上 3/4 證書、下 1/4 信封倒印） ── */
