@@ -45,6 +45,12 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-heigh
   writing-mode:vertical-rl;letter-spacing:.4em;font-size:13px;
   font-family:var(--serif);background:rgba(255,255,255,.25);
 }
+.counter-bar{
+  margin-top:12px;font-size:13px;color:var(--seal-dark);
+  letter-spacing:.04em;
+}
+.counter-bar b{font-size:15px;color:var(--seal);font-variant-numeric:tabular-nums;margin-left:2px}
+.counter-sep{margin:0 10px;opacity:.45}
 .privacy-note{
   max-width:980px;margin:14px auto 0;font-size:13px;color:var(--seal-dark);
   background:rgba(255,255,255,.45);border:1px dashed var(--seal);
@@ -298,6 +304,11 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     <div class="sub" id="mastSub">已退公立學校教職員退休所得重行審定　公文及通知書</div>
     <div class="stamp-box">公文封</div>
     <div class="privacy-note">所有資料僅在您的瀏覽器內處理，不會上傳至任何伺服器。</div>
+    <div class="counter-bar" id="counterBar">
+      <span class="counter-item">造訪人次：<b id="cntVisit">—</b></span>
+      <span class="counter-sep">·</span>
+      <span class="counter-item">文件產製次數：<b id="cntMake">—</b></span>
+    </div>
   </div>
 </header>
 
@@ -464,6 +475,38 @@ let roster = [];          // {序號, 姓名, 郵遞區號, 地址}
 let checkedIdx = new Set();
 
 const $ = s => document.querySelector(s);
+
+/* ============================================================
+   使用次數計數器（CountAPI，免註冊；服務若異常則靜默略過，不影響功能）
+   key 取夠獨特字串避免與他人衝突
+============================================================ */
+const COUNT_API = "https://countapi.mileshilliard.com/api/v1";
+const CNT_VISIT_KEY = "kh_songda_docs_visit_2026a";
+const CNT_MAKE_KEY  = "kh_songda_docs_make_2026a";
+let _makeCounted = false;   // 同一次互動避免重複累加（下載+列印分開算，但避免誤觸連點）
+
+async function cntCall(path){
+  try{
+    const r = await fetch(`${COUNT_API}/${path}`, {cache:"no-store"});
+    if(!r.ok) return null;
+    const d = await r.json();
+    return d && d.value != null ? parseInt(d.value, 10) : null;
+  }catch(e){ return null; }
+}
+function cntShow(id, v){
+  const el = $(id);
+  if(el) el.textContent = (v==null ? "—" : v.toLocaleString("zh-Hant"));
+}
+// 載入時：造訪 +1；產製數只讀取顯示
+async function initCounters(){
+  cntCall(`hit/${CNT_VISIT_KEY}`).then(v => cntShow("#cntVisit", v));
+  cntCall(`get/${CNT_MAKE_KEY}`).then(v => cntShow("#cntMake", v));
+}
+// 產製文件時呼叫：產製數 +1 並更新顯示
+function bumpMakeCount(){
+  cntCall(`hit/${CNT_MAKE_KEY}`).then(v => { if(v!=null) cntShow("#cntMake", v); });
+}
+initCounters();
 window.addEventListener("error", e => {
   console.error(e);
 });
