@@ -152,15 +152,15 @@ footer{
   text-align:center;color:var(--ink-soft);font-size:12px;padding:18px;
   letter-spacing:.08em;
 }
-/* ── 人員類別選擇器 ── */
-.mode-card{max-width:980px;margin:22px auto 0;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--seal);border-radius:4px;padding:15px 22px}
-.mode-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.mode-label{font-family:var(--serif);font-weight:700;letter-spacing:.1em;color:var(--ink)}
-.seg{display:inline-flex;align-items:center;border:1px solid var(--kraft);border-radius:4px;overflow:hidden}
-.seg-btn{background:#fff;color:var(--ink-soft);padding:7px 16px;font-size:15px;border:none;border-left:1px solid var(--kraft-light);cursor:pointer}
-.seg-btn:first-child{border-left:none}
-.seg-btn.active{background:var(--seal);color:#fff;font-weight:700}
-.mode-hint{margin-top:10px;font-size:13px;color:var(--ink-soft);line-height:1.6}
+.feedback .step-no{background:var(--kraft-deep);font-size:15px}
+.fb-text{font-size:15px;margin-bottom:14px}
+.fb-mail{
+  display:inline-block;font-size:18px;font-weight:700;color:var(--seal);
+  text-decoration:none;border:1px solid var(--seal);border-radius:3px;
+  padding:10px 22px;letter-spacing:.05em;transition:background .15s;
+}
+.fb-mail:hover{background:#FBEFEC}
+.fb-hint{font-size:13px;color:var(--ink-soft);margin-top:12px}
 
 /* ── 列印版面 ───────────────────────────── */
 #printArea{display:none}
@@ -185,19 +185,6 @@ table.pf td{border:1px solid #000;padding:4px 6px;vertical-align:top}
 .env-addr{font-size:18pt;margin-top:14px}
 .env-name{font-size:26pt;font-weight:700;margin-top:18px;letter-spacing:.15em}
 .sign-title{text-align:center;font-size:18pt;font-weight:700;margin-bottom:12px;line-height:1.5}
-/* ── 交寄大宗執據存根（橫式 2 聯單） ── */
-@page mailpage{size:A4 landscape;margin:8mm}
-.mail-page{page:mailpage;font-family:"DFKai-SB","BiauKai","標楷體",var(--serif);color:#000}
-.mail-title{font-size:14pt;font-weight:700;text-align:center;letter-spacing:.06em}
-.mail-lian{font-size:12pt;letter-spacing:0}
-.mail-sub{text-align:center;font-size:9pt;margin:1.5mm 0 2.5mm;letter-spacing:.04em}
-.mail-head{font-size:9pt;line-height:1.5;margin-bottom:1.5mm}
-table.mail-tbl{width:100%;border-collapse:collapse;table-layout:fixed}
-table.mail-tbl th,table.mail-tbl td{border:1px solid #000;padding:1px 3px;font-size:8.5pt;text-align:center;line-height:1.3;word-break:break-all;height:6.6mm}
-table.mail-tbl td.mc-addr{text-align:left;font-size:8pt}
-table.mail-tbl td.mc-no{font-weight:600}
-.mail-notes{margin:2mm 0 0 5mm;padding:0;font-size:7pt;line-height:1.38}
-.mail-notes li{margin-bottom:.3mm}
 @media (max-width:640px){
   .stamp-box{display:none}
   .step-head .hint{display:none}
@@ -286,30 +273,13 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 <header class="masthead">
   <div class="masthead-inner">
     <h1>送達文件產製系統</h1>
-    <div class="sub" id="mastSub">已退公立學校教職員退休所得重行審定　公文及通知書</div>
+    <div class="sub">已退公立學校教職員退休所得重行審定　公文及通知書</div>
     <div class="stamp-box">公文封</div>
     <div class="privacy-note">所有資料僅在您的瀏覽器內處理，不會上傳至任何伺服器。</div>
   </div>
 </header>
 
 <main>
-
-  <!-- 類別選擇 -->
-  <section class="mode-card">
-    <div class="mode-row">
-      <span class="mode-label">人員類別</span>
-      <div class="seg" id="kindSeg">
-        <button type="button" class="seg-btn active" data-kind="教育">教育人員</button>
-        <button type="button" class="seg-btn" data-kind="公務">公務人員</button>
-      </div>
-      <div class="seg" id="artSeg" hidden>
-        <span class="mode-label" style="margin-left:6px;font-size:14px">適用條文</span>
-        <button type="button" class="seg-btn active" data-art="37">第37條</button>
-        <button type="button" class="seg-btn" data-art="38">第38條</button>
-      </div>
-    </div>
-    <div class="mode-hint" id="modeHint"></div>
-  </section>
 
   <!-- 步驟一 -->
   <section class="step">
@@ -321,7 +291,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     <div class="step-body">
       <button class="btn-primary" id="btnTemplate">下載 Excel 範本</button>
       <p class="tmpl-note">
-        範本內含三個工作表：<b>基本資料</b>（單位名稱、地址、文號／發文字號、承辦人、退休發放機關，全批共用；下載的範本會依目前選擇的人員類別自動帶入對應欄名與範例）、
+        範本內含三個工作表：<b>基本資料</b>（學校名稱、地址、發文字號、承辦人、退休發放機關，全批共用）、
         <b>退休人員名冊</b>（序號、姓名、郵遞區號、地址，每人一列，可自行增列）與<b>郵遞區號表</b>（對照用）。
         名冊只需依序填「序號、姓名、地址」三欄，最後的「郵遞區號」欄<b>會依地址自動帶入，無須填寫</b>
         （台／臺寫法皆可，前 300 列已預設公式，必要時可手動覆蓋）。範例列請以實際資料覆蓋。
@@ -393,7 +363,6 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         <label class="doc-chip"><input type="checkbox" class="docType" value="cert">送達證書（整頁）</label>
         <label class="doc-chip"><input type="checkbox" class="docType" value="env">信封套印（整頁）</label>
         <label class="doc-chip"><input type="checkbox" class="docType" value="env3">橫式信封（A4 每頁 3 筆）</label>
-        <label class="doc-chip"><input type="checkbox" class="docType" value="mail">交寄大宗執據存根（2聯單）</label>
       </div>
       <div class="out-row">
         <button class="btn-primary" id="btnPrint">開啟列印／另存 PDF</button>
@@ -407,7 +376,6 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         ．<b>信封套印（整頁）</b>：每人一頁橫式 A4 信封面（寄件人左上、收件人中右），適合需要逐張調整或大字列印時使用。Word 與列印／PDF 皆可輸出。<br>
         ．<b>對摺套印（證書¾＋信封¼）</b>：每人一張 A4，上方 ¾ 為送達證書、下方 ¼ 為信封收件資訊（倒印）；
         沿摺線向後對摺即一面證書、一面地址，可直接黏貼於信封背面，是最省工的日常作業格式。<b>僅提供列印／PDF</b>。<br>
-        ．<b>交寄大宗執據存根（2聯單）</b>：郵局大宗掛號交寄清單，每 20 人一組、每組印 2 聯（寄件人存查／交郵局），自動帶入順序、姓名、地址；橫式 A4。Word 與列印／PDF 皆可輸出。<br>
         ．<b>橫式信封（A4 每頁 3 筆）</b>：每張 A4 由上而下排 3 筆收件資訊，每格約 186×86mm（符合橫式信封 140–235×90–165mm 規格），
         沿剪裁線裁開即可黏貼或套印於信封，適合人數多、想省紙時使用。<b>僅提供列印／PDF</b>。<br>
         <b>輸出方式</b><br>
@@ -418,7 +386,33 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     </div>
   </section>
 
+<section class="step" id="stepFeedback">
+    <div class="step-head">
+      <div class="step-no">★</div>
+      <h2>問題回報與建議</h2>
+    </div>
+    <div class="step-body">
+      <p style="font-size:15px;line-height:1.8">
+        使用上若遇到問題，或對格式、功能有任何建議，歡迎來信告知，我會盡快處理。<br>
+        來信請寄至：<a href="mailto:ctsai0124@gmail.com?subject=送達文件產製系統%20問題回報／建議" style="color:var(--seal);font-weight:700;text-decoration:none;border-bottom:1px solid var(--seal)">ctsai0124@gmail.com</a>
+        　（點擊可直接開啟郵件軟體）
+      </p>
+    </div>
+  </section>
+
 </main>
+
+  <section class="step feedback">
+    <div class="step-head">
+      <div class="step-no">？</div>
+      <h2>問題回報與意見回饋</h2>
+    </div>
+    <div class="step-body">
+      <p class="fb-text">使用上有任何問題、發現錯誤，或有想法建議，歡迎來信告知，我會盡快處理。</p>
+      <a class="fb-mail" href="mailto:ctsai0124@gmail.com?subject=%E9%80%81%E9%81%94%E6%96%87%E4%BB%B6%E7%94%A2%E8%A3%BD%E7%B3%BB%E7%B5%B1%E2%80%94%E5%95%8F%E9%A1%8C%E5%9B%9E%E5%A0%B1%EF%BC%8F%E6%84%8F%E8%A6%8B%E5%9B%9E%E9%A5%8B">✉　ctsai0124@gmail.com</a>
+      <p class="fb-hint">點擊上方信箱會自動開啟您電腦的郵件軟體並帶入主旨；若未自動開啟，可手動寄信至此信箱。</p>
+    </div>
+  </section>
 
 <footer>本工具依「附件4 製作送達證書之操作說明」格式產製文件．資料不離開瀏覽器</footer>
 
@@ -428,16 +422,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 /* ============================================================
    全域狀態
 ============================================================ */
-const BASE_FIELDS = ["單位名稱","單位郵遞區號","單位地址","發文字號","承辦人","退休發放機關"];
-// 舊範本／機關別名 → 中性欄位；文號 → 發文字號
-const FIELD_ALIAS = {"學校名稱":"單位名稱","學校郵遞區號":"單位郵遞區號","學校地址":"單位地址","機關名稱":"單位名稱","機關郵遞區號":"單位郵遞區號","機關地址":"單位地址","文號":"發文字號"};
-let docMode = { kind:"教育", article:37 };   // 由頁首選擇器設定
-const isGov = () => docMode.kind === "公務";
-function caseText(){ return `銓敘部文書〔依公務人員退休資遣撫卹法第${docMode.article}條規定重新計算台端每月退休（職）所得案〕`; }
-function unitDept(){ return (baseInfo.承辦單位 && String(baseInfo.承辦單位).trim()) || "人事室"; }
-function certTitle(){ return isGov() ? "銓敘部送達證書" : `${baseInfo.單位名稱||""}送達證書`; }
-function signTitleLines(){ return isGov() ? ["公務人員退休所得重行計算","公文及通知書　簽收單"] : ["已退公立學校教職員退休所得重行審定","公文及通知書　簽收單"]; }
-function docNumLabel(){ return isGov() ? "文號" : "發文字號"; }
+const BASE_FIELDS = ["學校名稱","學校郵遞區號","學校地址","發文字號","承辦人","退休發放機關"];
 let baseInfo = {};
 let roster = [];          // {序號, 姓名, 郵遞區號, 地址}
 let checkedIdx = new Set();
@@ -466,23 +451,17 @@ function zipLookup(addr){
 $("#btnTemplate").addEventListener("click", () => {
   const wb = XLSX.utils.book_new();
 
-  const _g = isGov();
-  const _numField = _g ? "文號" : "發文字號";
-  const _numEx    = _g ? "115年6月9日部退三字第1151234567號函" : "高市府教人字第11500000000號";
-  const _numHint  = _g ? "銓敘部重審文書之文號（部退…號函），全批共用" : "重行審定通知書之發文文號";
-  const _unitEx   = _g ? "高雄市政府○○局" : "高雄市○○區○○國民小學";
   const baseRows = [
     ["欄位","內容","填寫說明"],
-    ["單位名稱",_unitEx,"發文機關（學校／機關）全銜"],
-    ["單位郵遞區號","800","單位地址之 3 或 6 碼郵遞區號"],
-    ["單位地址","高雄市○○區○○路000號","送達證書繳回地址"],
-    [_numField,_numEx,_numHint],
-    ["承辦人","王○○","承辦人姓名"],
-    ["承辦單位","人事室","送達證書繳回單位（可留「人事室」）"],
-    ["退休發放機關",_unitEx,"簽收單用，通常同單位名稱"]
+    ["學校名稱","高雄市○○區○○國民小學","請填完整校名"],
+    ["學校郵遞區號","800","學校地址之 3 或 6 碼郵遞區號"],
+    ["學校地址","高雄市○○區○○路000號","送達證書繳回地址"],
+    ["發文字號","高市府教人字第11500000000號","重行審定通知書之發文文號"],
+    ["承辦人","王○○","學校人事室承辦人姓名"],
+    ["退休發放機關","高雄市○○區○○國民小學","簽收單用，通常同校名"]
   ];
   const ws1 = XLSX.utils.aoa_to_sheet(baseRows);
-  ws1["!cols"] = [{wch:16},{wch:40},{wch:36}];
+  ws1["!cols"] = [{wch:16},{wch:38},{wch:34}];
   XLSX.utils.book_append_sheet(wb, ws1, "基本資料");
 
   const listRows = [
@@ -508,7 +487,7 @@ $("#btnTemplate").addEventListener("click", () => {
   ws3["!cols"] = [{wch:22},{wch:12}];
   XLSX.utils.book_append_sheet(wb, ws3, "郵遞區號表");
 
-  XLSX.writeFile(wb, isGov() ? "送達文件產製範本（公務人員）.xlsx" : "送達文件產製範本（教育人員）.xlsx");
+  XLSX.writeFile(wb, "送達文件產製範本.xlsx");
 });
 
 /* ============================================================
@@ -545,10 +524,8 @@ function parseWorkbook(wb){
   // 基本資料（欄位 / 內容）
   baseInfo = {};
   XLSX.utils.sheet_to_json(wb.Sheets[baseName], {header:1, defval:""}).forEach(r => {
-    const k0 = String(r[0]||"").trim();
-    const k = FIELD_ALIAS[k0] || k0;
-    const v = String(r[1]||"").trim();
-    if(k && k0 !== "欄位") baseInfo[k] = v;
+    const k = String(r[0]||"").trim(), v = String(r[1]||"").trim();
+    if(k && k !== "欄位") baseInfo[k] = v;
   });
   BASE_FIELDS.forEach(f => { if(!baseInfo[f]) errs.push(`「基本資料」缺少：${f}`); });
 
@@ -673,17 +650,11 @@ function certChildren(p, last){
       cell("受送達人名稱姓名地址",{span:2,align:C,width:3500}),
       cell([ para(p.姓名,{bold:true,size:26}), para(`${p.郵遞區號} ${p.地址}`,{size:26}) ],{span:2,width:7100})
     ]}),
-    ...(isGov()
-      ? [ new D.TableRow({children:[
-            cell("文　　　　號",{span:2,align:C}),
-            cell(`${b.發文字號}`,{span:2,bold:true}) ]}),
-          new D.TableRow({children:[
-            cell("送達文書（含案由）",{span:2,align:C}),
-            cell(caseText(),{span:2,bold:true}) ]}) ]
-      : [ new D.TableRow({children:[
-            cell("送　達　文　書",{span:2,align:C}),
-            cell([ para("已退公立學校教職員退休所得重行審定公文及通知書",{bold:true}),
-                   para(`（${b.發文字號}）`,{bold:true}) ],{span:2}) ]}) ]),
+    new D.TableRow({children:[
+      cell("送　達　文　書",{span:2,align:C}),
+      cell([ para("已退公立學校教職員退休所得重行審定公文及通知書",{bold:true}),
+             para(`（${b.發文字號}）`,{bold:true}) ],{span:2})
+    ]}),
     new D.TableRow({children:[
       cell("原寄郵局日戳",{rowSpan:4,align:C,width:1750}),
       cell("送達郵局日戳",{rowSpan:4,align:C,width:1750}),
@@ -725,20 +696,17 @@ function certChildren(p, last){
   ];
 
   const out = [
-    para(certTitle(),{align:C,size:32,bold:true,after:100}),
+    para(`${b.學校名稱}送達證書`,{align:C,size:32,bold:true,after:100}),
     new D.Table({rows, width:{size:10600,type:D.WidthType.DXA}, columnWidths:widths}),
-    ...(isGov()
-      ? [ para(`※請務必於寄送後將本送達證書繳回（${b.單位名稱}），地址：${b.單位郵遞區號} ${b.單位地址}`,{size:22,before:80}),
-          para(`單位：${unitDept()}　　承辦人：${b.承辦人}`,{align:D.AlignmentType.RIGHT,size:22,before:60}) ]
-      : [ para(`※請繳回：${b.單位名稱}送達證書`,{size:22,before:80}),
-          para(`　地址：${b.單位郵遞區號} ${b.單位地址}`,{size:22}),
-          para(`單位：${unitDept()}　　承辦人${b.承辦人}`,{align:D.AlignmentType.RIGHT,size:22,before:60}) ])
+    para(`※請繳回：${b.學校名稱}送達證書`,{size:22,before:80}),
+    para(`　地址：${b.學校郵遞區號} ${b.學校地址}（學校地址）`,{size:22}),
+    para(`單位：人事室　　承辦人${b.承辦人}`,{align:D.AlignmentType.RIGHT,size:22,before:60})
   ];
   if(!last) out.push(new D.Paragraph({children:[new D.PageBreak()]}));
   return out;
 }
 function buildCertDoc(persons){
-  CERT_LINE = 200;                                  // 壓縮行距（約 0.83 倍單行）
+  CERT_LINE = 240;                                  // 單行行距（避免多行儲存格文字重疊）
   CELL_PAD  = {top:22,bottom:22,left:80,right:80};  // 壓縮儲存格上下內距
   const children = persons.flatMap((p,i)=>certChildren(p, i===persons.length-1));
   CERT_LINE = 276;                                  // 還原預設，避免影響其他文件
@@ -767,8 +735,8 @@ function buildSignDoc(persons){
   return new D.Document({sections:[{
     properties:{page:{size:{width:11906,height:16838},margin:{top:800,bottom:700,left:900,right:900}}},
     children:[
-      para(signTitleLines(),{align:C,size:32,bold:true,after:120,line:360}),
-      para(`${docNumLabel()}：${b.發文字號}`,{size:26,bold:true,after:160}),
+      para(["已退公立學校教職員退休所得重行審定","公文及通知書　簽收單"],{align:C,size:32,bold:true,after:120,line:360}),
+      para(`發文字號：${b.發文字號}`,{size:26,bold:true,after:160}),
       new D.Table({rows:[header,...body], width:{size:10100,type:D.WidthType.DXA}, columnWidths:[3100,2000,2600,2400]})
     ]
   }]});
@@ -781,8 +749,8 @@ function buildEnvDoc(persons){
   const children = persons.flatMap((p,i)=>{
     const blk = [
       // 寄件人：左上角，小字
-      para(`${b.單位郵遞區號}　${b.單位地址}`,{size:20}),
-      para(`${b.單位名稱}　人事室　寄`,{size:20}),
+      para(`${b.學校郵遞區號}　${b.學校地址}`,{size:20}),
+      para(`${b.學校名稱}　人事室　寄`,{size:20}),
       para(`編號：${p.序號}`,{size:20}),
       // 收件人：中央偏右，大字
       new D.Paragraph({indent, spacing:{before:700}, children:[tr(p.郵遞區號,{size:30})]}),
@@ -799,77 +767,10 @@ function buildEnvDoc(persons){
   }]});
 }
 
-/* ── 交寄大宗限時掛號及掛號函件執據存根（2聯單） ── */
-const MAIL_GROUP = 20;   // 每聯 20 件為 1 組
-const MAIL_NOTES = [
-  "此單填寫1式2份。",
-  "限時掛號、掛號函件與快捷郵件不得同列一單，請將標題塗去其二。",
-  "函件背面應註明順序號碼，並按號碼次序排齊滿20件為1組分組交寄。",
-  "將本埠與外埠函件分別列單交寄。",
-  "郵件應妥為封裝，如為小包或快捷郵件，內裝易脆物品者，請於封面正面加貼「脆弱郵件小心搬運」紅杯標籤。",
-  "如有證明郵資、重量必要者，應由寄件人自行在聯單相關欄內分別註明，並結填總郵資，交郵局經辦員逐件核對。本執據僅作交寄郵件郵資及重量之證明，不得移作其他用途。",
-  "日後如須查詢，應於交寄日起6個月內查詢。如上網查詢，請參考本表左上角收寄局局碼及種類碼，輸入完整14碼（掛號號碼＋收寄局碼＋郵件種類碼）。",
-  "掛號函件全部遺失或被竊時之補償金額，每件為新臺幣575元。",
-  "錢鈔或有價證券請利用報值或保價交寄。",
-  "交寄限時小包掛號或快捷郵件，請詳填內裝物。",
-  "郵件不得裝寄危險物品或禁寄物品，凡裝寄前述物品遭海關或內政部警政署航空警察局扣留或處以罰鍰者，應由寄件人負全部責任。"
-];
-function mailGroups(persons){ const g=[]; for(let i=0;i<persons.length;i+=MAIL_GROUP) g.push(persons.slice(i,i+MAIL_GROUP)); return g; }
-function mailAddr(p){ return (p.郵遞區號?p.郵遞區號+" ":"") + p.地址; }
-
-function mailDocChildren(group, lian){
-  const b = baseInfo;
-  const colW = [760,2100,2100,4380,900,1000,1000,1000,2060];
-  const hcell = (t,w)=>cell(t,{align:C,bold:true,size:18,width:w});
-  const hdr = new D.TableRow({tableHeader:true, children:[
-    hcell(["順序","號碼"],colW[0]), hcell("掛號號碼",colW[1]), hcell("收件人姓名",colW[2]),
-    hcell("寄達地名（或地址）",colW[3]), hcell(["是否","回執"],colW[4]), hcell(["是否","印刷物"],colW[5]),
-    hcell("重量",colW[6]), hcell("郵資",colW[7]), hcell("內裝物品名稱",colW[8])
-  ]});
-  const rows=[hdr];
-  for(let i=0;i<MAIL_GROUP;i++){
-    const p = group[i];
-    rows.push(new D.TableRow({children:[
-      cell(String(i+1),{align:C,size:18}),
-      cell("　",{size:18}),
-      cell(p?p.姓名:"　",{align:C,size:18}),
-      cell(p?mailAddr(p):"　",{size:18}),
-      cell("　",{size:18}),cell("　",{size:18}),cell("　",{size:18}),cell("　",{size:18}),cell("　",{size:18})
-    ]}));
-  }
-  return [
-    para(`交寄大宗限時掛號及掛號函件執據存根　（${lian}）`,{align:C,size:26,bold:true,after:60}),
-    para("限時掛號　·　掛號函件　·　快捷郵件　（請將其中二項標題塗去）　　此單1式2份",{align:C,size:16,after:90}),
-    para(`寄件人名稱：${b.單位名稱||""}　　電話號碼：＿＿＿＿＿＿＿＿`,{size:18}),
-    para(`詳細地址：${b.單位郵遞區號||""} ${b.單位地址||""}`,{size:18}),
-    para("寄件人代表：＿＿＿＿＿＿　　中華民國　　　年　　　月　　　日",{size:18,after:80}),
-    new D.Table({rows, width:{size:15300,type:D.WidthType.DXA}, columnWidths:colW}),
-    ...MAIL_NOTES.map((n,idx)=> para(`${idx+1}. ${n}`,{size:15, before: idx===0?80:0}))
-  ];
-}
-function buildMailDoc(persons){
-  CERT_LINE = 180; CELL_PAD = {top:16,bottom:16,left:60,right:60};
-  const groups = mailGroups(persons);
-  const children = [];
-  groups.forEach((g,gi)=>{
-    children.push(...mailDocChildren(g,"第一聯　寄件人存查"));
-    children.push(new D.Paragraph({children:[new D.PageBreak()]}));
-    children.push(...mailDocChildren(g,"第二聯　交郵局收執"));
-    if(gi !== groups.length-1) children.push(new D.Paragraph({children:[new D.PageBreak()]}));
-  });
-  CERT_LINE = 276; CELL_PAD = {top:60,bottom:60,left:90,right:90};
-  return new D.Document({sections:[{
-    properties:{page:{size:{width:16838,height:11906,orientation:D.PageOrientation.LANDSCAPE},
-                margin:{top:540,bottom:400,left:540,right:540}}},
-    children
-  }]});
-}
-
 const DOC_DEFS = {
   cert:{name:"送達證書", build:buildCertDoc},
   sign:{name:"簽收單",   build:buildSignDoc},
-  env :{name:"信封套印", build:buildEnvDoc},
-  mail:{name:"交寄大宗執據存根", build:buildMailDoc}
+  env :{name:"信封套印", build:buildEnvDoc}
 };
 
 $("#btnWord").addEventListener("click", async ()=>{
@@ -907,17 +808,12 @@ $("#btnWord").addEventListener("click", async ()=>{
 function certInner(p){
   const b = baseInfo;
   return `
-    <div class="pf-title">${esc(certTitle())}</div>
+    <div class="pf-title">${esc(b.學校名稱)}送達證書</div>
     <table class="pf">
       <tr><td colspan="2" class="pf-center" style="width:32%">受送達人名稱姓名地址</td>
           <td colspan="2"><b>${esc(p.姓名)}</b><br>${esc(p.郵遞區號)} ${esc(p.地址)}</td></tr>
-      ${ isGov()
-        ? `<tr><td colspan="2" class="pf-center">文　　　號</td>
-              <td colspan="2"><b>${esc(b.發文字號)}</b></td></tr>
-           <tr><td colspan="2" class="pf-center">送達文書（含案由）</td>
-              <td colspan="2"><b>${esc(caseText())}</b></td></tr>`
-        : `<tr><td colspan="2" class="pf-center">送　達　文　書</td>
-              <td colspan="2"><b>已退公立學校教職員退休所得重行審定公文及通知書<br>（${esc(b.發文字號)}）</b></td></tr>` }
+      <tr><td colspan="2" class="pf-center">送　達　文　書</td>
+          <td colspan="2"><b>已退公立學校教職員退休所得重行審定公文及通知書<br>（${esc(b.發文字號)}）</b></td></tr>
       <tr><td rowspan="4" class="pf-center" style="width:16%">原寄郵局日戳</td>
           <td rowspan="4" class="pf-center" style="width:16%">送達郵局日戳</td>
           <td class="pf-center" style="width:48%">送達處所（由送達人填記）</td>
@@ -941,10 +837,8 @@ function certInner(p){
       <tr><td colspan="2" class="pf-center">送　達　人　注　意　事　項</td>
           <td colspan="2" class="pf-small">一、依上述送達方法送達者，送達人應即將本送達證書，提出於交送達之行政機關附卷。<br>二、不能依上述送達方法送達者，送達人應製作記載該事由之報告書，提出於交送達之行政機關附卷，並繳回應送達之文書。</td></tr>
     </table>
-    <div class="pf-footer">${ isGov()
-        ? `※請務必於寄送後將本送達證書繳回（${esc(b.單位名稱)}），地址：${esc(b.單位郵遞區號)} ${esc(b.單位地址)}`
-        : `※請繳回：${esc(b.單位名稱)}送達證書<br>　地址：${esc(b.單位郵遞區號)} ${esc(b.單位地址)}` }
-      <div style="text-align:right">單位：${esc(unitDept())}　　承辦人：${esc(b.承辦人)}</div></div>`;
+    <div class="pf-footer">※請繳回：${esc(b.學校名稱)}送達證書<br>　地址：${esc(b.學校郵遞區號)} ${esc(b.學校地址)}（學校地址）
+      <div style="text-align:right">單位：人事室　　承辦人${esc(b.承辦人)}</div></div>`;
 }
 function certHTML(p){ return `<div class="pf-page cert-page"><div class="cert-fit">${certInner(p)}</div></div>`; }
 
@@ -955,7 +849,7 @@ function foldHTML(p){
     <div class="fold-cert"><div class="fold-scale">${certInner(p)}</div></div>
     <div class="fold-line">────────────　摺　線（沿此線向後對摺，地址面朝外）　────────────</div>
     <div class="fold-env">
-      <div class="fe-sender">${esc(b.單位郵遞區號)}　${esc(b.單位地址)}<br>${esc(b.單位名稱)}　人事室　寄　　編號：${esc(p.序號)}</div>
+      <div class="fe-sender">${esc(b.學校郵遞區號)}　${esc(b.學校地址)}<br>${esc(b.學校名稱)}　人事室　寄　　編號：${esc(p.序號)}</div>
       <div class="fe-recipient">
         <div class="fe-zip">${esc(p.郵遞區號)}</div>
         <div class="fe-addr">${esc(p.地址)}</div>
@@ -972,8 +866,8 @@ function signHTML(persons){
       <td class="pf-center">${esc(p.姓名)}</td><td>　</td>
       <td class="pf-center">　　　年　　月　　日</td></tr>`).join("");
   return `<div class="pf-page">
-    <div class="sign-title">${signTitleLines().map(esc).join("<br>")}</div>
-    <p style="font-size:13pt;font-weight:700;margin-bottom:8px">${esc(docNumLabel())}：${esc(b.發文字號)}</p>
+    <div class="sign-title">已退公立學校教職員退休所得重行審定<br>公文及通知書　簽收單</div>
+    <p style="font-size:13pt;font-weight:700;margin-bottom:8px">發文字號：${esc(b.發文字號)}</p>
     <table class="pf" style="width:calc(100% - 4px)">
       <tr><td class="pf-center" style="width:32%"><b>退休發放機關</b></td>
           <td class="pf-center" style="width:20%"><b>退休人員姓名</b></td>
@@ -987,7 +881,7 @@ function signHTML(persons){
 function envHTML(p){
   const b = baseInfo;
   return `<div class="pf-page env-page">
-    <div class="env-sender">${esc(b.單位郵遞區號)}　${esc(b.單位地址)}<br>${esc(b.單位名稱)}　人事室　寄<br>編號：${esc(p.序號)}</div>
+    <div class="env-sender">${esc(b.學校郵遞區號)}　${esc(b.學校地址)}<br>${esc(b.學校名稱)}　人事室　寄<br>編號：${esc(p.序號)}</div>
     <div class="env-recipient">
       <div class="env-zip">${esc(p.郵遞區號)}</div>
       <div class="env-addr">${esc(p.地址)}</div>
@@ -999,7 +893,7 @@ function envHTML(p){
 function env3HTML(persons){
   const b = baseInfo;
   const panel = p => `<div class="env3-panel">
-      <div class="e3-sender">${esc(b.單位郵遞區號)}　${esc(b.單位地址)}<br>${esc(b.單位名稱)}　人事室　寄　　編號：${esc(p.序號)}</div>
+      <div class="e3-sender">${esc(b.學校郵遞區號)}　${esc(b.學校地址)}<br>${esc(b.學校名稱)}　人事室　寄　　編號：${esc(p.序號)}</div>
       <div class="e3-recipient">
         <div class="e3-zip">${esc(p.郵遞區號)}</div>
         <div class="e3-addr">${esc(p.地址)}</div>
@@ -1017,44 +911,6 @@ function env3HTML(persons){
   return out;
 }
 
-function mailRowsHTML(group){
-  let s = "";
-  for(let i=0;i<MAIL_GROUP;i++){
-    const p = group[i];
-    s += `<tr><td class="mc-no">${i+1}</td><td></td>`
-       + `<td>${p?esc(p.姓名):""}</td>`
-       + `<td class="mc-addr">${p?esc(mailAddr(p)):""}</td>`
-       + `<td></td><td></td><td></td><td></td><td></td></tr>`;
-  }
-  return s;
-}
-function mailPageHTML(group, lian){
-  const b = baseInfo;
-  return `<div class="pf-page mail-page">
-    <div class="mail-title">交寄大宗限時掛號及掛號函件執據存根　<span class="mail-lian">（${esc(lian)}）</span></div>
-    <div class="mail-sub">限時掛號　·　掛號函件　·　快捷郵件　（請將其中二項標題塗去）　　此單1式2份</div>
-    <div class="mail-head">
-      <div><b>寄件人名稱：</b>${esc(b.單位名稱||"")}　　<b>電話號碼：</b>＿＿＿＿＿＿＿＿＿＿</div>
-      <div><b>詳細地址：</b>${esc((b.單位郵遞區號||"")+" "+(b.單位地址||""))}</div>
-      <div><b>寄件人代表：</b>＿＿＿＿＿＿＿＿　　中華民國　　　年　　　月　　　日</div>
-    </div>
-    <table class="mail-tbl">
-      <thead><tr>
-        <th style="width:5%">順序<br>號碼</th><th style="width:14%">掛號號碼</th>
-        <th style="width:13%">收件人姓名</th><th style="width:28%">寄達地名（或地址）</th>
-        <th style="width:6%">是否<br>回執</th><th style="width:6%">是否<br>印刷物</th>
-        <th style="width:6%">重量</th><th style="width:6%">郵資</th>
-        <th style="width:16%">內裝物品名稱</th>
-      </tr></thead>
-      <tbody>${mailRowsHTML(group)}</tbody>
-    </table>
-    <ol class="mail-notes">${MAIL_NOTES.map(n=>`<li>${esc(n)}</li>`).join("")}</ol>
-  </div>`;
-}
-function mailHTML(persons){
-  return mailGroups(persons).map(g => mailPageHTML(g,"第一聯　寄件人存查") + mailPageHTML(g,"第二聯　交郵局收執")).join("");
-}
-
 $("#btnPrint").addEventListener("click", ()=>{
   const persons = selectedPersons(), types = selectedTypes();
   if(!persons.length) return alert("請先勾選至少一位人員。");
@@ -1065,7 +921,6 @@ $("#btnPrint").addEventListener("click", ()=>{
   if(types.includes("env"))  html += persons.map(envHTML).join("");
   if(types.includes("fold")) html += persons.map(foldHTML).join("");
   if(types.includes("env3")) html += env3HTML(persons);
-  if(types.includes("mail")) html += mailHTML(persons);
   $("#printArea").innerHTML = html;
   fitFolds();
   setTimeout(()=>window.print(), 80);
@@ -1098,28 +953,6 @@ function fitFolds(){
   });
   pa.style.cssText = "";   // 還原為僅列印時顯示
 }
-
-/* ── 人員類別選擇器 ── */
-function updateModeUI(){
-  const gov = isGov();
-  document.querySelectorAll("#kindSeg .seg-btn").forEach(b=>b.classList.toggle("active", b.dataset.kind===docMode.kind));
-  document.querySelectorAll("#artSeg .seg-btn").forEach(b=>b.classList.toggle("active", +b.dataset.art===docMode.article));
-  $("#artSeg").hidden = !gov;
-  $("#mastSub").textContent = gov ? "公務人員退休所得重行計算　送達文件" : "已退公立學校教職員退休所得重行審定　公文及通知書";
-  $("#modeHint").innerHTML = gov
-    ? `公務人員：送達文書為「${caseText()}」，並含獨立「文號」欄；簽收單標題為「公務人員退休所得重行計算　公文及通知書　簽收單」。`
-    : "教育人員：送達文書為「已退公立學校教職員退休所得重行審定公文及通知書」。";
-  if(Object.keys(baseInfo).length){ renderBase(); }
-}
-$("#kindSeg").addEventListener("click", e=>{
-  const btn = e.target.closest(".seg-btn"); if(!btn) return;
-  docMode.kind = btn.dataset.kind; updateModeUI();
-});
-$("#artSeg").addEventListener("click", e=>{
-  const btn = e.target.closest(".seg-btn"); if(!btn) return;
-  docMode.article = +btn.dataset.art; updateModeUI();
-});
-updateModeUI();
 
 /* 初始狀態 */
 $("#btnWord").disabled = $("#btnPrint").disabled = true;
