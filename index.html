@@ -159,6 +159,18 @@ footer{
   letter-spacing:.08em;
 }
 .feedback .step-no{background:var(--kraft-deep);font-size:15px}
+.downloads .step-no{background:var(--kraft-deep);font-size:15px}
+.dl-text{font-size:15px;margin-bottom:14px}
+.dl-item{
+  display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line);border-radius:4px;padding:14px 18px;margin-bottom:10px;
+  transition:border-color .15s,background .15s;
+}
+.dl-item:hover{border-color:var(--seal);background:#FBEFEC}
+.dl-icon{font-size:26px;flex:none}
+.dl-info{display:flex;flex-direction:column;gap:3px}
+.dl-info b{font-size:16px}
+.dl-meta{font-size:13px;color:var(--ink-soft)}
 .fb-text{font-size:15px;margin-bottom:14px}
 .fb-mail{
   display:inline-block;font-size:18px;font-weight:700;color:var(--seal);
@@ -439,6 +451,24 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   </section>
 
 </main>
+
+  <section class="step downloads">
+    <div class="step-head">
+      <div class="step-no">＋</div>
+      <h2>相關文件下載</h2>
+    </div>
+    <div class="step-body">
+      <p class="dl-text">以下為退休所得重審作業的補充說明文件，歡迎下載參閱。</p>
+      <a class="dl-item" href="retirement-review-infographic.pdf" download="115年改重審處分後的相關作業製作懶人包圖卡.pdf">
+        <span class="dl-icon">📄</span>
+        <span class="dl-info"><b>退休所得重審作業重點懶人包（圖卡）</b><span class="dl-meta">PDF · 重點一次看懂</span></span>
+      </a>
+      <a class="dl-item" href="retirement-review-faq.pdf" download="114年度退休所得重審作業說帖.pdf">
+        <span class="dl-icon">📄</span>
+        <span class="dl-info"><b>114年度退休所得重審作業說帖</b><span class="dl-meta">PDF · 常見問答與詳細說明</span></span>
+      </a>
+    </div>
+  </section>
 
   <section class="step feedback">
     <div class="step-head">
