@@ -207,10 +207,10 @@ table.pf td{border:1px solid #000;padding:4px 6px;vertical-align:top}
 .pf-footer{font-size:11pt;margin-top:8px}
 .env-page{display:block;min-height:90vh;padding:40px;position:relative}
 .env-sender{font-size:11pt;line-height:1.7}
-.env-recipient{margin:60mm 0 0 38%}
-.env-zip{font-size:16pt;letter-spacing:.5em}
-.env-addr{font-size:18pt;margin-top:14px}
-.env-name{font-size:26pt;font-weight:700;margin-top:18px;letter-spacing:.15em}
+.env-recipient{margin:70mm auto 0;text-align:center}
+.env-name{font-size:30pt;font-weight:700;letter-spacing:.15em}
+.env-zip{font-size:16pt;letter-spacing:.5em;margin-top:18px}
+.env-addr{font-size:18pt;margin-top:8px}
 .sign-title{text-align:center;font-size:18pt;font-weight:700;margin-bottom:12px;line-height:1.5}
 /* ── 交寄大宗執據存根（橫式 2 聯單） ── */
 @page mailpage{size:A4 landscape;margin:8mm}
@@ -871,17 +871,16 @@ function buildSignDoc(persons){
 /* ── 信封套印 ── */
 function buildEnvDoc(persons){
   const b = baseInfo;
-  const indent = {left:4200};   // 收件人區塊向中央偏右
   const children = persons.flatMap((p,i)=>{
     const blk = [
       // 寄件人：左上角，小字
       para(`${b.單位郵遞區號}　${b.單位地址}`,{size:20}),
       para(`${b.單位名稱}　人事室　寄`,{size:20}),
       para(`編號：${p.序號}`,{size:20}),
-      // 收件人：中央偏右，大字
-      new D.Paragraph({indent, spacing:{before:700}, children:[tr(p.郵遞區號,{size:30})]}),
-      new D.Paragraph({indent, spacing:{before:160}, children:[tr(p.地址,{size:34})]}),
-      new D.Paragraph({indent, spacing:{before:260}, children:[tr(`${p.姓名}　　君收`,{size:50,bold:true})]})
+      // 收件人：水平置中。姓名（大字）在上，郵遞區號、地址在下
+      new D.Paragraph({alignment:C, spacing:{before:900}, children:[tr(`${p.姓名}　　君收`,{size:52,bold:true})]}),
+      new D.Paragraph({alignment:C, spacing:{before:320}, children:[tr(p.郵遞區號,{size:28})]}),
+      new D.Paragraph({alignment:C, spacing:{before:120}, children:[tr(p.地址,{size:32})]})
     ];
     if(i!==persons.length-1) blk.push(new D.Paragraph({children:[new D.PageBreak()]}));
     return blk;
@@ -1051,9 +1050,9 @@ function foldHTML(p){
     <div class="fold-env">
       <div class="fe-sender">${esc(b.單位郵遞區號)}　${esc(b.單位地址)}<br>${esc(b.單位名稱)}　人事室　寄　　編號：${esc(p.序號)}</div>
       <div class="fe-recipient">
+        <div class="fe-name">${esc(p.姓名)}　　君收</div>
         <div class="fe-zip">${esc(p.郵遞區號)}</div>
         <div class="fe-addr">${esc(p.地址)}</div>
-        <div class="fe-name">${esc(p.姓名)}　　君收</div>
       </div>
     </div>
   </div>`;
@@ -1083,9 +1082,9 @@ function envHTML(p){
   return `<div class="pf-page env-page">
     <div class="env-sender">${esc(b.單位郵遞區號)}　${esc(b.單位地址)}<br>${esc(b.單位名稱)}　人事室　寄<br>編號：${esc(p.序號)}</div>
     <div class="env-recipient">
+      <div class="env-name">${esc(p.姓名)}　　君收</div>
       <div class="env-zip">${esc(p.郵遞區號)}</div>
       <div class="env-addr">${esc(p.地址)}</div>
-      <div class="env-name">${esc(p.姓名)}　　君收</div>
     </div>
   </div>`;
 }
@@ -1095,9 +1094,9 @@ function env3HTML(persons){
   const panel = p => `<div class="env3-panel">
       <div class="e3-sender">${esc(b.單位郵遞區號)}　${esc(b.單位地址)}<br>${esc(b.單位名稱)}　人事室　寄　　編號：${esc(p.序號)}</div>
       <div class="e3-recipient">
+        <div class="e3-name">${esc(p.姓名)}　　君收</div>
         <div class="e3-zip">${esc(p.郵遞區號)}</div>
         <div class="e3-addr">${esc(p.地址)}</div>
-        <div class="e3-name">${esc(p.姓名)}　　君收</div>
       </div>
     </div>`;
   const cut = `<div class="env3-cut">✂　──────────────────────　剪　裁　線　──────────────────────</div>`;
@@ -1229,10 +1228,10 @@ $("#btnWord").disabled = $("#btnPrint").disabled = true;
 .env3-page{height:269mm;overflow:hidden}
 .env3-panel{height:84mm;padding:6mm 10mm;box-sizing:border-box}
 .e3-sender{font-size:9pt;line-height:1.6}
-.e3-recipient{margin:7mm 0 0 34%}
-.e3-zip{font-size:12pt;letter-spacing:.4em}
-.e3-addr{font-size:13pt;margin-top:1.5mm}
-.e3-name{font-size:19pt;font-weight:700;letter-spacing:.15em;margin-top:2mm}
+.e3-recipient{margin:7mm auto 0;text-align:center}
+.e3-name{font-size:21pt;font-weight:700;letter-spacing:.15em}
+.e3-zip{font-size:12pt;letter-spacing:.4em;margin-top:2mm}
+.e3-addr{font-size:13pt;margin-top:1mm}
 .env3-cut{height:6mm;line-height:6mm;text-align:center;font-size:7pt;border-top:1px dashed #000;color:#000}
 
 /* 整頁送達證書：鎖定保守高度，內容由 JS 自動縮放，確保任何列印邊界設定下都不跨頁 */
@@ -1253,10 +1252,10 @@ $("#btnWord").disabled = $("#btnPrint").disabled = true;
   padding:3mm 14mm;border-top:1px dashed #000;
 }
 .fe-sender{font-size:8.5pt;line-height:1.6}
-.fe-recipient{margin:4mm 0 0 32%}
-.fe-zip{font-size:12pt;letter-spacing:.4em}
-.fe-addr{font-size:13pt;margin-top:1.5mm}
-.fe-name{font-size:19pt;font-weight:700;letter-spacing:.15em;margin-top:2mm}
+.fe-recipient{margin:4mm auto 0;text-align:center}
+.fe-name{font-size:21pt;font-weight:700;letter-spacing:.15em}
+.fe-zip{font-size:12pt;letter-spacing:.4em;margin-top:2mm}
+.fe-addr{font-size:13pt;margin-top:1mm}
 
 /* 壓縮版送達證書（塞入 3/4 頁高） */
 .compact .pf-title{font-size:15pt;margin-bottom:1.5mm;letter-spacing:.18em}
