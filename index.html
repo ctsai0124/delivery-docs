@@ -348,13 +348,13 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     <div class="step-head">
       <div class="step-no">一</div>
       <h2>下載 Excel 範本</h2>
-      <span class="hint">含「基本資料」與「退休人員名冊」兩個工作表</span>
+      <span class="hint">含「基本資料」與「送達／退休人員名冊」兩個工作表</span>
     </div>
     <div class="step-body">
       <button class="btn-primary" id="btnTemplate">下載 Excel 範本</button>
       <p class="tmpl-note">
         範本內含三個工作表：<b>基本資料</b>（單位名稱、地址、文號／發文字號、承辦人、退休發放機關，全批共用；下載的範本會依目前選擇的人員類別自動帶入對應欄名與範例。<b>進階自訂</b>：另有「送達文書名稱」「簽收單標題」「人員稱謂」「機關欄位名稱」等欄位，留空即用預設；填寫後可將本系統套用於其他公文的送達作業）、
-        <b>退休人員名冊</b>（序號、姓名、郵遞區號、地址，每人一列，可自行增列）與<b>郵遞區號表</b>（對照用）。
+        <b>送達／退休人員名冊</b>（序號、姓名、郵遞區號、地址，每人一列，可自行增列）與<b>郵遞區號表</b>（對照用）。
         名冊只需依序填「序號、姓名、地址」三欄，最後的「郵遞區號」欄<b>會依地址自動帶入，無須填寫</b>
         （台／臺寫法皆可，前 300 列已預設公式，必要時可手動覆蓋）。範例列請以實際資料覆蓋。
       </p>
@@ -607,7 +607,7 @@ $("#btnTemplate").addEventListener("click", () => {
       f:`IF($C${r}="","",IFERROR(LOOKUP(2,1/(LEFT(SUBSTITUTE($C${r},"台","臺"),LEN(郵遞區號表!$A$2:$A$${LAST}))=郵遞區號表!$A$2:$A$${LAST}),郵遞區號表!$B$2:$B$${LAST}),""))`};
   }
   ws2["!ref"] = "A1:D301";
-  XLSX.utils.book_append_sheet(wb, ws2, "退休人員名冊");
+  XLSX.utils.book_append_sheet(wb, ws2, "送達／退休人員名冊");
 
   // 郵遞區號對照表（依區號排序，便於人工查閱）
   const zipRows = [["縣市區域","郵遞區號3碼"],
@@ -647,7 +647,7 @@ function parseWorkbook(wb){
   const errs = [];
 
   if(!baseName || !wb.Sheets[baseName]) errs.push("找不到「基本資料」工作表。");
-  if(!listName || !wb.Sheets[listName]) errs.push("找不到「退休人員名冊」工作表。");
+  if(!listName || !wb.Sheets[listName]) errs.push("找不到「送達／退休人員名冊」工作表（名稱含「名冊」即可）。");
   if(errs.length){ showMsg("err", errs.join("\n")); return; }
 
   // 基本資料（欄位 / 內容）
@@ -683,7 +683,7 @@ function parseWorkbook(wb){
     }
     roster.push({序號:no, 姓名:name, 郵遞區號:zip, 地址:addr});
   });
-  if(!roster.length) errs.push("「退休人員名冊」沒有任何人員資料。");
+  if(!roster.length) errs.push("「送達／退休人員名冊」沒有任何人員資料。");
 
   if(errs.length){ showMsg("err","資料檢查未通過：\n" + errs.join("\n")); return; }
 
