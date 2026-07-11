@@ -334,11 +334,6 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         <button type="button" class="seg-btn active" data-kind="教育">教育人員</button>
         <button type="button" class="seg-btn" data-kind="公務">公務人員</button>
       </div>
-      <div class="seg" id="artSeg" hidden>
-        <span class="mode-label" style="margin-left:6px;font-size:14px">適用條文</span>
-        <button type="button" class="seg-btn active" data-art="37">第37條</button>
-        <button type="button" class="seg-btn" data-art="38">第38條</button>
-      </div>
     </div>
     <div class="mode-hint" id="modeHint"></div>
   </section>
@@ -493,9 +488,9 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 const BASE_FIELDS = ["單位名稱","單位郵遞區號","單位地址","發文字號","承辦人","退休發放機關"];
 // 舊範本／機關別名 → 中性欄位；文號 → 發文字號
 const FIELD_ALIAS = {"學校名稱":"單位名稱","學校郵遞區號":"單位郵遞區號","學校地址":"單位地址","機關名稱":"單位名稱","機關郵遞區號":"單位郵遞區號","機關地址":"單位地址","文號":"發文字號"};
-let docMode = { kind:"教育", article:37 };   // 由頁首選擇器設定
+let docMode = { kind:"教育" };   // 由頁首選擇器設定
 const isGov = () => docMode.kind === "公務";
-function caseText(){ return `銓敘部文書〔依公務人員退休資遣撫卹法第${docMode.article}條規定重新計算台端每月退休（職）所得案〕`; }
+function caseText(){ return "銓敘部文書〔依公務人員退休資遣撫卹法規定重新計算台端每月退休（職）所得案〕"; }
 /* ── 進階自訂（基本資料可覆寫，留空＝預設）── */
 const cf = f => (baseInfo[f] && String(baseInfo[f]).trim()) || "";
 function unitDept(){ return cf("承辦單位") || "人事室"; }
@@ -1211,21 +1206,15 @@ function fitFolds(){
 function updateModeUI(){
   const gov = isGov();
   document.querySelectorAll("#kindSeg .seg-btn").forEach(b=>b.classList.toggle("active", b.dataset.kind===docMode.kind));
-  document.querySelectorAll("#artSeg .seg-btn").forEach(b=>b.classList.toggle("active", +b.dataset.art===docMode.article));
-  $("#artSeg").hidden = !gov;
   $("#mastSub").textContent = gov ? "公務人員退休所得重行計算　送達文件" : "已退公立學校教職員退休所得重行審定　公文及通知書";
   $("#modeHint").innerHTML = gov
-    ? `公務人員：送達文書為「${caseText()}」，並含獨立「文號」欄；簽收單標題為「公務人員退休所得重行計算　公文及通知書　簽收單」。`
-    : "教育人員：送達文書為「已退公立學校教職員退休所得重行審定公文及通知書」。";
+    ? `公務人員：送達文書預設為「${caseText()}」，並含獨立「文號」欄；簽收單標題為「公務人員退休所得重行計算　公文及通知書　簽收單」。如需標明適用條文或改為其他公文，請於 Excel「基本資料」的「送達文書名稱」自訂。`
+    : "教育人員：送達文書預設為「已退公立學校教職員退休所得重行審定公文及通知書」。如需改為其他公文，請於 Excel「基本資料」的「送達文書名稱」自訂。";
   if(Object.keys(baseInfo).length){ renderBase(); }
 }
 $("#kindSeg").addEventListener("click", e=>{
   const btn = e.target.closest(".seg-btn"); if(!btn) return;
   docMode.kind = btn.dataset.kind; updateModeUI();
-});
-$("#artSeg").addEventListener("click", e=>{
-  const btn = e.target.closest(".seg-btn"); if(!btn) return;
-  docMode.article = +btn.dataset.art; updateModeUI();
 });
 updateModeUI();
 
